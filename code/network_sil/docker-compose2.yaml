@@ -1,0 +1,19 @@
+#docker-compose.yaml
+version: '3.8'
+name: 'network-across-project-2'
+
+services:
+  frontend:
+    image: nginx:latest
+    expose:
+      - 80
+    # ports:
+    #   - 80:80
+    networks:
+      across_project:
+        aliases:
+          - web
+
+networks:
+  across_project:
+    external: true

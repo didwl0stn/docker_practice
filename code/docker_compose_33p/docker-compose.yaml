@@ -1,0 +1,16 @@
+#docker-compose.yaml
+version: '3.8'
+
+services:
+  ubuntu:
+    container_name: server
+    build: 
+      context: ../docker_compose_13p
+      dockerfile: Dockerfile
+    image: clouewave/compose:inline_build.v1
+    restart: no
+  nginx:
+    image: nginx:latest
+    expose:
+      - 80
+    restart: always

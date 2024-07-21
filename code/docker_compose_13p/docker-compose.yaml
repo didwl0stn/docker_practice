@@ -1,0 +1,17 @@
+# docker-compose.yaml
+
+version: '3.8'
+
+services:
+  server:
+    image: compose:build.v2.dockerfile
+    build:
+      # dockerfile_inline: |
+      #   # FROM ubuntu:22.04
+      #   # RUN apt-get update && apt-get upgrade
+      dockerfile: Dockerfile
+    entrypoint: /bin/bash
+    command: 
+      - -c
+      - "sleep 3600"
+    restart: no

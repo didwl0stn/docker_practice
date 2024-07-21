@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  code-server:
+    image: cloudwave:practice.v1
+    container_name: ide_temp
+    environment:
+      FILE__PASSWORD: /run/secrets/code-server-password
+    env_file:
+      - .env
+    working_dir: /code
+    ports:
+      - 8442:8443
+    secrets:
+      - code-server-password
+    volumes:
+      - local_code:/code/local
+      - /var/run/docker.sock:/var/run/docker.sock
+      - config:/config
+      - remote_code:/code/remote
+    depends_on:
+      git-sync:
+        condition: service_completed_successfully
+    
+  git-sync:
+    container_name: GitSync
+    image: registry.k8s.io/git-sync/git-sync:v4.1.0
+    volumes:
+      - remote_code:/tmp
+    environment:
+      - GITSYNC_REPO=https://github.com/matenduel/cloudwave
+      - GITSYNC_ROOT=/tmp/git
+      - GITSYNC_REF=main
+      - GITSYNC_DEPTH=1
+      - GITSYNC_ONE_TIME=1
+    profiles:
+      - init
+    
+    
+    # healthcheck:
+    #   test: ["CMD-SHELL", "if [ \"$GITSYNC_ONE_TIME\" == \"1\" ]; then exit 0; else exit 1; fi"]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 5
+    #   start_period: 10s
+    
+volumes:
+  local_code:
+    external: true
+  config:
+    external: true
+  remote_code:
+    external: true
+  
+      
+
+secrets:
+  code-server-password:
+    file: "password.txt"

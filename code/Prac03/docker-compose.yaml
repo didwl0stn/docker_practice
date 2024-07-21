@@ -1,0 +1,22 @@
+version: '3.8'
+name: 'prac03'
+services:
+  ubuntu:
+    container_name: "server"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cloudwave:ubuntu.dig.v1
+    entrypoint: /bin/bash
+    command: 
+      - -c 
+      - "sleep infinity"
+  
+  web-app:
+    image: nginx:latest
+    deploy:
+      replicas: 3
+    expose:
+      - 80
+  
+    

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.1-bullseye
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+  
+  server:
+    image: ubuntu:22.04
+    stdin_open: true
+    tty: true
+    depends_on:
+      - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:7.4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@sample.command
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
+    depends_on:
+      - postgres
+      - server
+    profiles:
+      - debug
